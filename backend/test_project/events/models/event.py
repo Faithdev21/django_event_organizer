@@ -6,7 +6,7 @@ from events.models.organization import Organization
 
 class Event(models.Model):
     """Model representing event."""
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, unique=True)
     description = models.TextField()
     organizations = models.ManyToManyField(Organization, related_name='events')
     image = models.ImageField(upload_to='event_images/', null=True, blank=True)

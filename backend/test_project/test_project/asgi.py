@@ -1,12 +1,15 @@
 import os
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'test_project.settings')
 import django
+
 django.setup()
 
-from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
-from chat.routing import websocket_urlpatterns
+from django.core.asgi import get_asgi_application
+
 from chat.middleware import JWTAuthMiddlewareStack
+from chat.routing import websocket_urlpatterns
 
 application = ProtocolTypeRouter(
     {

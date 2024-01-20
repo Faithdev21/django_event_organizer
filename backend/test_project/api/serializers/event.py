@@ -1,21 +1,19 @@
-from typing import Dict, Tuple
-
 from rest_framework import serializers
-from rest_framework.utils.serializer_helpers import ReturnDict
 
 from api.serializers.image import Base64ImageField
 from api.serializers.organization import OrganizationSerializer
 from events.models.event import Event
+from events.models.organization import Organization
 
 
-class EventSerializer(serializers.ModelSerializer):
-    """Serializer for the Event model."""
-
+class EventOrganizationSerializer(serializers.ModelSerializer):
+    """Serializer for the Event model with OrganizationSerializer."""
+    organizations = OrganizationSerializer(many=True)
     image = Base64ImageField(required=False)
 
     class Meta:
         model = Event
-        fields: Tuple[str, ...] = (
+        fields = (
             "id",
             "title",
             "description",
@@ -24,20 +22,33 @@ class EventSerializer(serializers.ModelSerializer):
             "date",
         )
 
-    def validate(self, data: Dict) -> Dict:
-        organizations = data.get("organizations")
 
-        if not organizations:
-            raise serializers.ValidationError("Organization field is required")
-        return data
+class EventSerializer(serializers.ModelSerializer):
+    """Serializer for the Event model."""
+    organizations = serializers.PrimaryKeyRelatedField(
+        queryset=Organization.objects.all(),
+        many=True,
+        required=True
+    )
+    image = Base64ImageField(required=False)
 
-    def create(self, validated_data: Dict) -> ReturnDict:
-        instance = super().create(validated_data)
+    class Meta:
+        model = Event
+        fields = (
+            "id",
+            "title",
+            "description",
+            "organizations",
+            "image",
+            "date",
+        )
+
+    def create(self, validated_data):
+        organizations_data = validated_data.pop('organizations', [])
+        instance = Event.objects.create(**validated_data)
+        instance.organizations.set(organizations_data)
         return instance
 
-    def to_representation(self, instance: Event) -> Dict:
-        representation = super().to_representation(instance)
-        representation["organizations"] = OrganizationSerializer(
-            instance.organizations.all(), many=True
-        ).data
+    def to_representation(self, instance):
+        representation = EventOrganizationSerializer(instance).data
         return representation

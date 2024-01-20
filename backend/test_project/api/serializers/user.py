@@ -2,11 +2,12 @@ from typing import Tuple
 
 from djoser.serializers import UserCreateSerializer
 
+from api.serializers.organization import OrganizationUserSerializer
 from users.models import User
 
 
-class CustomUserSerializer(UserCreateSerializer):
-    """Serializer for the custom User model."""
+class CustomUserEventSerializer(UserCreateSerializer):
+    """Serializer for the events requests."""
 
     class Meta:
         model = User
@@ -14,7 +15,6 @@ class CustomUserSerializer(UserCreateSerializer):
             "id",
             "email",
             "phone_number",
-            "organizations",
             "password",
         )
         extra_kwargs: dict = {"password": {"write_only": True}}
@@ -26,3 +26,19 @@ class CustomUserSerializer(UserCreateSerializer):
             password=validated_data["password"],
         )
         return user
+
+
+class CustomUserSerializer(CustomUserEventSerializer):
+    """Serializer for the custom User model."""
+    organizations = OrganizationUserSerializer(many=True, required=False)
+
+    class Meta:
+        model = User
+        fields: Tuple[str, ...] = (
+            "id",
+            "email",
+            "phone_number",
+            "organizations",
+            "password",
+        )
+        extra_kwargs: dict = {"password": {"write_only": True}}

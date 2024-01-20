@@ -11,7 +11,6 @@ from events.models.event import Event
 
 class EventViewSet(viewsets.ModelViewSet):
     """ViewSet for the Event model."""
-
     queryset = Event.objects.all()
     serializer_class = EventSerializer
     permission_classes = (IsAuthenticated,)

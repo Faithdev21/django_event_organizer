@@ -8,6 +8,7 @@ from channels.middleware import BaseMiddleware
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.db import close_old_connections
+from django.http import HttpResponseForbidden
 
 from users.models import User
 

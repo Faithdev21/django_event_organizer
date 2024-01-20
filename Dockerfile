@@ -14,7 +14,8 @@ COPY backend/test_project .
 
 ENV DJANGO_SETTINGS_MODULE=test_project.settings
 
-RUN python manage.py collectstatic && cp -r /app/collected_static/. /static/
+RUN python manage.py collectstatic
+RUN cp -r /app/collected_static/. /static/
 
 EXPOSE 8001
 EXPOSE 8000

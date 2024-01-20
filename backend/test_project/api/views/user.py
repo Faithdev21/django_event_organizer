@@ -1,11 +1,10 @@
-from rest_framework import generics
+from rest_framework import viewsets
 
-from api.serializers import CustomUserSerializer
+from api.serializers.user import CustomUserSerializer
 from users.models import User
 
 
-class UserListView(generics.ListCreateAPIView):
-    """API view for listing and creating users."""
-
+class UserListView(viewsets.ModelViewSet):
+    """ViewSet for listing and creating users."""
     queryset = User.objects.all()
     serializer_class = CustomUserSerializer
