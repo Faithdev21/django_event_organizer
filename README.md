@@ -40,7 +40,7 @@ DB_HOST=db
 DB_PORT=5432
 ```
 
-Из директории с docker-compose выполните:
+Из директории с docker-compose.yaml выполните:
 
 ```docker-compose up -d```
 
@@ -60,7 +60,7 @@ DB_PORT=5432
 
 Для удобства тестирования можно выполнить команду загрузки тестовых данных в БД:
 
-```docker-compose exec web python manage.py populate_db```
+```docker-compose exec backend python manage.py import_csv```
 
 Документация API:
 
